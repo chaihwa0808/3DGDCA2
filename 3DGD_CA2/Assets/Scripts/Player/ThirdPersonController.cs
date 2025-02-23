@@ -98,12 +98,6 @@ public class ThirdPersonController : MonoBehaviour
         originalHeight = controller.height;
         originalCenter = controller.center;
 
-        Collider obstacleCollider = GameObject.FindWithTag("Obstacle").GetComponent<Collider>();
-        Collider characterCollider = GetComponent<Collider>(); // This will be the CharacterController's collider
-
-        // Ignore collisions between the character and the obstacle
-        Physics.IgnoreCollision(characterCollider, obstacleCollider);
-
         characterRenderer = characterModel.GetComponent<SkinnedMeshRenderer>();
     }
 
@@ -300,7 +294,19 @@ public class ThirdPersonController : MonoBehaviour
     // --- Respawn player ---
     public void RespawnAtCheckpoint()
     {
-        transform.position = lastCheckpointPosition + new Vector3(0, -0.4f, 0); // Set player position to the checkpoint
+        // Disable any movement or physics
+        controller.enabled = false;  // Temporarily disable the controller
+
+        // Make sure the player doesn't have knockback movement during teleportation
+        StopAllCoroutines(); // Stop any ongoing knockback or movement coroutines
+
+        // Set the player position to the checkpoint
+        transform.position = lastCheckpointPosition + new Vector3(0, -0.4f, 0);
+
+        // Re-enable the controller after teleportation
+        controller.enabled = true;
+
+        // Reset the character's velocity or other properties as needed
         moveSpeed = 7f;
     }
 
