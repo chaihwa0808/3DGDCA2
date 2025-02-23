@@ -301,6 +301,11 @@ public class ThirdPersonController : MonoBehaviour
     public void RespawnAtCheckpoint()
     {
         transform.position = lastCheckpointPosition + new Vector3(0, -0.4f, 0); // Set player position to the checkpoint
+
+        controller.enabled = false;
+        transform.position = lastCheckpointPosition + new Vector3(0, 0.5f, 0);
+        controller.enabled = true;
+
     }
 
     public void KnockbackAndBlink(Vector3 knockbackDirection, float knockbackStrength, float blinkDuration)
@@ -310,6 +315,8 @@ public class ThirdPersonController : MonoBehaviour
 
     private IEnumerator HandleKnockbackAndBlink(Vector3 knockbackDirection, float knockbackStrength, float blinkDuration)
     {
+        isKnockedBack = true;
+
         // Knockback the player
         float timer = 0;
         float knockbackDuration = 0.5f; // Duration of knockback
@@ -351,6 +358,8 @@ public class ThirdPersonController : MonoBehaviour
 
         // Ensure the character is visible again after blink
         SetPlayerVisibility(true);
+
+        isKnockedBack = false;
 
         // Respawn player at the last checkpoint
         RespawnAtCheckpoint();
