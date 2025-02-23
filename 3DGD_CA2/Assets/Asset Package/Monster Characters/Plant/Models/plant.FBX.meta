@@ -1,116 +1,293 @@
 fileFormatVersion: 2
 guid: 4770b5dea1b57814da5a982f59d638be
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: Audrey2
-    100002: bone01
-    100004: bone02
-    100006: bone03
-    100008: bone04
-    100010: bone05
-    100012: bone06
-    100014: bone07
-    100016: bone08
-    100018: bone09
-    100020: bone10
-    100022: bone11
-    100024: bone12
-    100026: bone13
-    100028: bone14
-    100030: bone15
-    100032: bone16
-    100034: bone17
-    100036: bone18
-    100038: bone19
-    100040: bone20
-    100042: bone21
-    100044: bone22
-    100046: bone23
-    100048: bone24
-    100050: bone25
-    100052: bone26
-    100054: bone27
-    100056: bone28
-    100058: Dummy01
-    100060: IK Chain01
-    100062: IK Chain02
-    100064: IK Chain03
-    100066: IK Chain04
-    100068: //RootNode
-    400000: Audrey2
-    400002: bone01
-    400004: bone02
-    400006: bone03
-    400008: bone04
-    400010: bone05
-    400012: bone06
-    400014: bone07
-    400016: bone08
-    400018: bone09
-    400020: bone10
-    400022: bone11
-    400024: bone12
-    400026: bone13
-    400028: bone14
-    400030: bone15
-    400032: bone16
-    400034: bone17
-    400036: bone18
-    400038: bone19
-    400040: bone20
-    400042: bone21
-    400044: bone22
-    400046: bone23
-    400048: bone24
-    400050: bone25
-    400052: bone26
-    400054: bone27
-    400056: bone28
-    400058: Dummy01
-    400060: IK Chain01
-    400062: IK Chain02
-    400064: IK Chain03
-    400066: IK Chain04
-    400068: //RootNode
-    4300000: Audrey2
-    7400000: idle
-    7400002: attack1
-    7400004: attack2
-    7400006: hit1
-    7400008: hit2
-    7400010: move
-    7400012: taunt
-    7400014: idle2
-    7400016: die
-    7400018: all_animations
-    7400020: dance
-    11100000: //RootNode
-    13700000: Audrey2
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Audrey2
+  - first:
+      1: 100002
+    second: bone01
+  - first:
+      1: 100004
+    second: bone02
+  - first:
+      1: 100006
+    second: bone03
+  - first:
+      1: 100008
+    second: bone04
+  - first:
+      1: 100010
+    second: bone05
+  - first:
+      1: 100012
+    second: bone06
+  - first:
+      1: 100014
+    second: bone07
+  - first:
+      1: 100016
+    second: bone08
+  - first:
+      1: 100018
+    second: bone09
+  - first:
+      1: 100020
+    second: bone10
+  - first:
+      1: 100022
+    second: bone11
+  - first:
+      1: 100024
+    second: bone12
+  - first:
+      1: 100026
+    second: bone13
+  - first:
+      1: 100028
+    second: bone14
+  - first:
+      1: 100030
+    second: bone15
+  - first:
+      1: 100032
+    second: bone16
+  - first:
+      1: 100034
+    second: bone17
+  - first:
+      1: 100036
+    second: bone18
+  - first:
+      1: 100038
+    second: bone19
+  - first:
+      1: 100040
+    second: bone20
+  - first:
+      1: 100042
+    second: bone21
+  - first:
+      1: 100044
+    second: bone22
+  - first:
+      1: 100046
+    second: bone23
+  - first:
+      1: 100048
+    second: bone24
+  - first:
+      1: 100050
+    second: bone25
+  - first:
+      1: 100052
+    second: bone26
+  - first:
+      1: 100054
+    second: bone27
+  - first:
+      1: 100056
+    second: bone28
+  - first:
+      1: 100058
+    second: Dummy01
+  - first:
+      1: 100060
+    second: IK Chain01
+  - first:
+      1: 100062
+    second: IK Chain02
+  - first:
+      1: 100064
+    second: IK Chain03
+  - first:
+      1: 100066
+    second: IK Chain04
+  - first:
+      1: 100068
+    second: //RootNode
+  - first:
+      4: 400000
+    second: Audrey2
+  - first:
+      4: 400002
+    second: bone01
+  - first:
+      4: 400004
+    second: bone02
+  - first:
+      4: 400006
+    second: bone03
+  - first:
+      4: 400008
+    second: bone04
+  - first:
+      4: 400010
+    second: bone05
+  - first:
+      4: 400012
+    second: bone06
+  - first:
+      4: 400014
+    second: bone07
+  - first:
+      4: 400016
+    second: bone08
+  - first:
+      4: 400018
+    second: bone09
+  - first:
+      4: 400020
+    second: bone10
+  - first:
+      4: 400022
+    second: bone11
+  - first:
+      4: 400024
+    second: bone12
+  - first:
+      4: 400026
+    second: bone13
+  - first:
+      4: 400028
+    second: bone14
+  - first:
+      4: 400030
+    second: bone15
+  - first:
+      4: 400032
+    second: bone16
+  - first:
+      4: 400034
+    second: bone17
+  - first:
+      4: 400036
+    second: bone18
+  - first:
+      4: 400038
+    second: bone19
+  - first:
+      4: 400040
+    second: bone20
+  - first:
+      4: 400042
+    second: bone21
+  - first:
+      4: 400044
+    second: bone22
+  - first:
+      4: 400046
+    second: bone23
+  - first:
+      4: 400048
+    second: bone24
+  - first:
+      4: 400050
+    second: bone25
+  - first:
+      4: 400052
+    second: bone26
+  - first:
+      4: 400054
+    second: bone27
+  - first:
+      4: 400056
+    second: bone28
+  - first:
+      4: 400058
+    second: Dummy01
+  - first:
+      4: 400060
+    second: IK Chain01
+  - first:
+      4: 400062
+    second: IK Chain02
+  - first:
+      4: 400064
+    second: IK Chain03
+  - first:
+      4: 400066
+    second: IK Chain04
+  - first:
+      4: 400068
+    second: //RootNode
+  - first:
+      43: 4300000
+    second: Audrey2
+  - first:
+      74: 7400000
+    second: idle
+  - first:
+      74: 7400002
+    second: attack1
+  - first:
+      74: 7400004
+    second: attack2
+  - first:
+      74: 7400006
+    second: hit1
+  - first:
+      74: 7400008
+    second: hit2
+  - first:
+      74: 7400010
+    second: move
+  - first:
+      74: 7400012
+    second: taunt
+  - first:
+      74: 7400014
+    second: idle2
+  - first:
+      74: 7400016
+    second: die
+  - first:
+      74: 7400018
+    second: all_animations
+  - first:
+      74: 7400020
+    second: dance
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Audrey2
+  externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 1
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
       name: idle
       takeName: 
+      internalID: 0
       firstFrame: 5
       lastFrame: 34
       wrapMode: 2
@@ -119,7 +296,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 1
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -139,6 +316,7 @@ ModelImporter:
     - serializedVersion: 16
       name: attack1
       takeName: 
+      internalID: 0
       firstFrame: 40
       lastFrame: 70
       wrapMode: 0
@@ -167,6 +345,7 @@ ModelImporter:
     - serializedVersion: 16
       name: attack2
       takeName: 
+      internalID: 0
       firstFrame: 75
       lastFrame: 105
       wrapMode: 0
@@ -195,6 +374,7 @@ ModelImporter:
     - serializedVersion: 16
       name: hit1
       takeName: 
+      internalID: 0
       firstFrame: 110
       lastFrame: 130
       wrapMode: 0
@@ -223,6 +403,7 @@ ModelImporter:
     - serializedVersion: 16
       name: hit2
       takeName: 
+      internalID: 0
       firstFrame: 135
       lastFrame: 155
       wrapMode: 0
@@ -251,6 +432,7 @@ ModelImporter:
     - serializedVersion: 16
       name: move
       takeName: 
+      internalID: 0
       firstFrame: 160
       lastFrame: 190
       wrapMode: 2
@@ -259,7 +441,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 1
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -279,6 +461,7 @@ ModelImporter:
     - serializedVersion: 16
       name: taunt
       takeName: 
+      internalID: 0
       firstFrame: 195
       lastFrame: 265
       wrapMode: 0
@@ -307,6 +490,7 @@ ModelImporter:
     - serializedVersion: 16
       name: idle2
       takeName: 
+      internalID: 0
       firstFrame: 270
       lastFrame: 330
       wrapMode: 0
@@ -315,7 +499,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -335,6 +519,7 @@ ModelImporter:
     - serializedVersion: 16
       name: die
       takeName: 
+      internalID: 0
       firstFrame: 330
       lastFrame: 400
       wrapMode: 0
@@ -363,6 +548,7 @@ ModelImporter:
     - serializedVersion: 16
       name: all_animations
       takeName: 
+      internalID: 0
       firstFrame: 1
       lastFrame: 400
       wrapMode: 2
@@ -391,6 +577,7 @@ ModelImporter:
     - serializedVersion: 16
       name: dance
       takeName: 
+      internalID: 0
       firstFrame: 410
       lastFrame: 459
       wrapMode: 2
@@ -422,25 +609,49 @@ ModelImporter:
     globalScale: 0.06
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -450,11 +661,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.06
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 1
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
