@@ -4349,6 +4349,7 @@ GameObject:
   - component: {fileID: 1627410926}
   - component: {fileID: 1627410925}
   - component: {fileID: 1627410924}
+  - component: {fileID: 1627410928}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Obstacle
@@ -4375,7 +4376,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.3, y: 1.3, z: 1.3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1627410925
 MeshRenderer:
@@ -4442,6 +4443,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1627410928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627410923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e853e911cc37748945beb4a8556338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1659470512
 PrefabInstance:
   m_ObjectHideFlags: 0
