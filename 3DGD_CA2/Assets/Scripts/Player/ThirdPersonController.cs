@@ -1,6 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(CharacterController))]
 public class ThirdPersonController : MonoBehaviour
@@ -18,6 +22,7 @@ public class ThirdPersonController : MonoBehaviour
     public float jumpSpeed = 5f;
     public float jumpHorizontalSpeed = 3f;
     public float jumpButtonGracePeriod = 0.2f;
+    public bool canMoveInAir = false;
 
     private float ySpeed;
     private float originalStepOffset;
@@ -39,12 +44,25 @@ public class ThirdPersonController : MonoBehaviour
     public float staminaRegenRate = 3f;      // Stamina regen per second when idle
     public Slider staminaBar;
 
+
+    [Header(">> Mushroom Settings")]
+    public int mushroomCount = 0;
+    public int maxMushrooms = 3;
+    public GameObject mushroomInHand;
+    private bool isMushroomSelected = false;
+    public GameObject thrownMushroomPrefab;
+    public Transform throwOrigin;
+    public float throwForce = 10f;
+    public float upwardForce = 5f;
+    public TextMeshProUGUI mushroomText;
+    public string otherPlayer;
+
+
     [Header(">> Player Markers")]
     public Transform feetMarker;
     public Transform headMarker;
     private float originalHeight;
     private Vector3 originalCenter;
-
 
     [Header(">> Combat Settings")]
     public float attackRange = 3f;
@@ -53,7 +71,6 @@ public class ThirdPersonController : MonoBehaviour
     [Header(">> Player Configuration")]
     public Player player;
     public enum Player { P1, P2 };
-
 
     void Start()
     {
@@ -71,9 +88,9 @@ public class ThirdPersonController : MonoBehaviour
         // --- INPUT HANDLING ---
         float h = Input.GetAxis("Horizontal " + player.ToString());
         float v = Input.GetAxis("Vertical " + player.ToString());
-        bool isCrouching = Input.GetButton("Crouch " + player.ToString());
+        bool isCrouching = Input.GetButton("Crouch " + player.ToString()); // joystick b 0
 
-        if (Input.GetButtonDown("Attack " + player.ToString()))
+        if (Input.GetButtonDown("Attack " + player.ToString())) // joystick b 1
         {
             animator.SetTrigger("Attack");
         }
@@ -92,7 +109,12 @@ public class ThirdPersonController : MonoBehaviour
             speed *= 0.5f; // Reduce speed by 50% when stamina is critically low
         }
 
-        Vector3 move = transform.TransformDirection(new Vector3(h, 0, v).normalized) * speed;
+        Vector3 move = Vector3.zero;
+
+        if (controller.isGrounded || canMoveInAir)
+        {
+            move = transform.TransformDirection(new Vector3(h, 0, v).normalized) * speed;
+        }
 
         // --- STAMINA DEPLETION ---
         float moveMagnitude = new Vector3(h, 0, v).magnitude;
@@ -126,6 +148,10 @@ public class ThirdPersonController : MonoBehaviour
             isJumping = false;
             isFalling = false;
             isLanding = false;
+
+            // Only allow movement in air if the player was moving before jumping
+            canMoveInAir = (Input.GetAxis("Horizontal " + player.ToString()) != 0 ||
+                            Input.GetAxis("Vertical " + player.ToString()) != 0);
 
             animator.SetBool("isGrounded", true);
             animator.SetBool("isJumping", false);
@@ -161,7 +187,7 @@ public class ThirdPersonController : MonoBehaviour
             lastVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
         }
 
-        if (Input.GetButtonDown("Jump " + player.ToString()))
+        if (Input.GetButtonDown("Jump " + player.ToString())) // joystick b 3
         {
             jumpButtonPressedTime = Time.time;
         }
@@ -171,6 +197,23 @@ public class ThirdPersonController : MonoBehaviour
 
         velocity.y = ySpeed;
         controller.Move(velocity * Time.deltaTime);
+
+        if (Input.GetButtonDown("MushroomSelection " + player.ToString()))
+        {
+            MushroomSelectionToggle();
+        }
+
+        if (Input.GetButtonDown("Throw " + player.ToString()))
+        {
+            if (mushroomCount >= 3 && isMushroomSelected)
+            {
+                animator.SetTrigger("Throw");
+            }
+            else
+            {
+                Debug.Log("not enough mushrooms");
+            }
+        }
 
         UpdateControllerSize();
     }
@@ -200,6 +243,7 @@ public class ThirdPersonController : MonoBehaviour
     {
         isFalling = false;
         isLanding = true;
+        canMoveInAir = false; // Reset when landing
 
         animator.SetBool("isFalling", false);
         animator.SetTrigger("Landing");
@@ -231,7 +275,7 @@ public class ThirdPersonController : MonoBehaviour
         SmoothHeightTransition();
     }
 
-     void SmoothHeightTransition()
+    void SmoothHeightTransition()
     {
         controller.height = targetHeight;
 
@@ -296,4 +340,94 @@ public class ThirdPersonController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position + new Vector3(0, 1, 0), attackRange);
     }
+
+    void MushroomSelectionToggle()
+    {
+        if (isMushroomSelected)
+        {
+            isMushroomSelected = false;
+            mushroomInHand.SetActive(false);
+        }
+        else if (mushroomCount >= maxMushrooms)
+        {
+            isMushroomSelected = true;
+            mushroomInHand.SetActive(true);
+        }
+    }
+
+    public void ThrowMushroom()
+    {
+        if (!isMushroomSelected || !mushroomInHand.activeSelf || mushroomCount < maxMushrooms)
+        {
+            Debug.Log("Cannot throw: No mushroom selected or not enough mushrooms.");
+            return;
+        }
+
+        GameObject otherPlayerObject = GameObject.Find(otherPlayer);
+
+        if (otherPlayerObject == null)
+        {
+            Debug.Log("Other player not found.");
+            return;
+        }
+
+        float throwRange = 5f; // Adjust as needed
+        float distance = Vector3.Distance(transform.position, otherPlayerObject.transform.position);
+
+        if (distance > throwRange)
+        {
+            Debug.Log("Other player is out of range. Cannot throw.");
+            return;
+        }
+
+        // Create the mushroom and start the arc movement
+        GameObject thrownMushroom = Instantiate(thrownMushroomPrefab, throwOrigin.position, Quaternion.identity);
+        StartCoroutine(MoveMushroomInArc(thrownMushroom, otherPlayerObject.transform.position));
+
+        // Reset mushroom selection
+        isMushroomSelected = false;
+        mushroomInHand.SetActive(false);
+        mushroomCount = 0;
+    }
+
+
+
+    public void CollectMushroom()
+    {
+        if (mushroomCount < maxMushrooms)
+        {
+            mushroomCount++;
+            UpdateMushroomUI();
+        }
+    }
+
+    void UpdateMushroomUI()
+    {
+        mushroomText.text = "Mushrooms: " + mushroomCount + "/" + maxMushrooms;
+    }
+
+    private IEnumerator MoveMushroomInArc(GameObject mushroom, Vector3 targetPosition)
+    {
+        float duration = 0.75f; // Time taken for the throw
+        float elapsedTime = 0f;
+
+        Vector3 startPosition = mushroom.transform.position;
+        Vector3 midPoint = (startPosition + targetPosition) / 2 + Vector3.up * 2f; // Adjust arc height
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+
+            // Quadratic Bezier Curve: Interpolating between start, mid, and target
+            Vector3 currentPosition = Vector3.Lerp(Vector3.Lerp(startPosition, midPoint, t), Vector3.Lerp(midPoint, targetPosition, t), t);
+            mushroom.transform.position = currentPosition;
+
+            yield return null;
+        }
+
+        // Ensure mushroom reaches the exact final position
+        mushroom.transform.position = targetPosition;
+    }
+
 }
