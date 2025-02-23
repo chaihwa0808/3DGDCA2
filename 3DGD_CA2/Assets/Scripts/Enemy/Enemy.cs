@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour
     bool playerInSight, playerInAttackRange;
 
     // Original position
-    private Vector3 originalPosition;
+    public Vector3 originalPosition;
     private bool returningToOriginal = false;
 
     Animator anim;
@@ -35,6 +35,8 @@ public class Enemy : MonoBehaviour
     // Attack cooldown
     [SerializeField] private float timeBetweenAttacks = 5f; //Cooldown time in seconds
     private float lastAttackTime = -Mathf.Infinity; // To track when the last attack occured
+
+    private EnemySpawner spawner;
 
 
 
@@ -111,6 +113,16 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void Initialize(EnemySpawner enemySpawner, Vector3 spawnPos)
+    {
+        spawner = enemySpawner;
+        originalPosition = spawnPos;
+        currentHealth = maxHealth;
+        healthBar.UpdateHealthBar(maxHealth, currentHealth);
+        anim.SetBool("isDead", false);
+        agent.enabled = true;
+        GetComponent<Collider>().enabled = true;
+    }
 
     void Chase(GameObject target)
     {
@@ -217,20 +229,20 @@ public class Enemy : MonoBehaviour
     }
 
     void Die()
-    { // Stop enemy movement
+    {
         agent.isStopped = true;
-
-        // Set the "Die" trigger in Animator
         anim.SetTrigger("Die");
-
-        // Disable collision so the enemy doesn't block anything after dying
         GetComponent<Collider>().enabled = false;
-
-        // Disable NavMeshAgent to prevent unwanted movement
         agent.enabled = false;
 
-        // Destroy the enemy after animation plays (adjust time if needed)
-        Destroy(gameObject, 2f);
+        if (spawner != null)
+        {
+            spawner.RespawnEnemy(originalPosition); // Pass position, not the Enemy object
+        }
+        else
+        {
+            Destroy(gameObject, 2f);
+        }
     }
 
     GameObject GetNearestPlayer()
