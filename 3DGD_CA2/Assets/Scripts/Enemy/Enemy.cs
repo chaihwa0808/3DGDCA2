@@ -37,6 +37,7 @@ public class Enemy : MonoBehaviour
     private float lastAttackTime = -Mathf.Infinity; // To track when the last attack occured
 
     private EnemySpawner spawner;
+    private ThirdPersonController lastAttacker;
 
 
 
@@ -197,11 +198,12 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, ThirdPersonController attacker)
     {
         if (currentHealth <= 0) return; // Prevent damage after death
 
         currentHealth -= damage;
+        lastAttacker = attacker;
         healthBar.UpdateHealthBar(maxHealth, currentHealth);
 
         // Play "Get Hit" animation using a bool
@@ -243,6 +245,12 @@ public class Enemy : MonoBehaviour
         {
             Destroy(gameObject, 2f);
         }
+
+        if (lastAttacker != null)
+        {
+            lastAttacker.IncreaseKillCount(); // Award the kill to the correct player
+        }
+
     }
 
     GameObject GetNearestPlayer()
@@ -266,7 +274,15 @@ public class Enemy : MonoBehaviour
         if (player != null)
         {
             print("Hit" + GetNearestPlayer());
-
         }
     }
+
+    public void StunPlayer()
+    {
+        GameObject playerTarget = GetNearestPlayer();
+        ThirdPersonController getPlayerScript = playerTarget.GetComponent<ThirdPersonController>();
+
+        getPlayerScript.animator.SetTrigger("TakeHit");
+    }
+
 }

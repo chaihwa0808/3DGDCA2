@@ -7,15 +7,20 @@ TagManager:
   - P1
   - P2
   - Enemy
+  - Mushroom
+  - Obstacle
+  - Stamina
+  - MainCamera1
+  - MainCamera2
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Obstacle
   - Water
   - UI
   - Post Processing
-  - 
+  - IgnoreCollision
   - 
   - 
   - 

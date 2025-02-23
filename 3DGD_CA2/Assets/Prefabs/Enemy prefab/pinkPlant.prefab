@@ -470,6 +470,7 @@ MonoBehaviour:
   range: 0
   sightRange: 5
   attackRange: 1
+  originalPosition: {x: 0, y: 0, z: 0}
   maxHealth: 6
   healthBar: {fileID: 3078107963007861133}
-  timeBetweenAttacks: 3
+  timeBetweenAttacks: 6

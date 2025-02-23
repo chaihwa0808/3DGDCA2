@@ -4,20 +4,16 @@ using UnityEngine;
 
 public class Mushroom : MonoBehaviour
 {
-    private Transform targetP2;
+
     public float hoverSpeed = 2f;    // Speed of hovering
     public float hoverHeight = 0.3f; // Maximum height variation
+    private Transform targetP2;
 
     private Vector3 startPos;
 
     private void Start()
     {
         startPos = transform.position;
-    }
-
-    public void SetTarget(Transform target)
-    {
-        targetP2 = target;
     }
 
     void OnTriggerEnter(Collider other)

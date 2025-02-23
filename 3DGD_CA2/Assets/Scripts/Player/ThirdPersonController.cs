@@ -5,13 +5,15 @@ using UnityEngine.UI;
 using UnityEngine.AI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
+using static ThirdPersonController;
 
 [RequireComponent(typeof(CharacterController))]
 public class ThirdPersonController : MonoBehaviour
 {
     // --- COMPONENTS ---
     private CharacterController controller;
-    private Animator animator;
+    public Animator animator;
     private Enemy enemy;
 
     [Header(">> Movement Settings")]
@@ -56,6 +58,7 @@ public class ThirdPersonController : MonoBehaviour
     public float upwardForce = 5f;
     public TextMeshProUGUI mushroomText;
     public string otherPlayer;
+    private bool isStunned = false;
 
 
     [Header(">> Player Markers")]
@@ -67,24 +70,47 @@ public class ThirdPersonController : MonoBehaviour
     [Header(">> Combat Settings")]
     public float attackRange = 3f;
     public int damageDealt = 1;
+    public int killCount = 0;
+    public TextMeshProUGUI killCountText;
+
+    [Header(">> Knockback, Checkpoint, Respawn")]
+    private Vector3 knockbackDirection;
+    private bool isKnockedBack = false;
+    private float knockbackDuration = 0.1f; // Duration of knockback
+    private float knockbackSpeed = 5f;      // Speed of knockback
+    private Vector3 lastCheckpointPosition;
 
     [Header(">> Player Configuration")]
     public Player player;
+    public int playerID;
     public enum Player { P1, P2 };
+    public GameObject characterModel;
+    public SkinnedMeshRenderer characterRenderer;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         originalStepOffset = controller.stepOffset;
+        lastCheckpointPosition = transform.position;
 
         // Store controller original height and center
         originalHeight = controller.height;
         originalCenter = controller.center;
+
+        Collider obstacleCollider = GameObject.FindWithTag("Obstacle").GetComponent<Collider>();
+        Collider characterCollider = GetComponent<Collider>(); // This will be the CharacterController's collider
+
+        // Ignore collisions between the character and the obstacle
+        Physics.IgnoreCollision(characterCollider, obstacleCollider);
+
+        characterRenderer = characterModel.GetComponent<SkinnedMeshRenderer>();
     }
 
     void Update()
     {
+        UpdateMushroomUI();
+
         // --- INPUT HANDLING ---
         float h = Input.GetAxis("Horizontal " + player.ToString());
         float v = Input.GetAxis("Vertical " + player.ToString());
@@ -114,6 +140,14 @@ public class ThirdPersonController : MonoBehaviour
         if (controller.isGrounded || canMoveInAir)
         {
             move = transform.TransformDirection(new Vector3(h, 0, v).normalized) * speed;
+        }
+
+        // --- Check if the player is in TakeHit animation ---
+        if (InTakeHitAnimaton())
+        {
+            // Stop movement while TakeHit is playing
+            controller.Move(Vector3.zero);
+            return;
         }
 
         // --- STAMINA DEPLETION ---
@@ -205,7 +239,7 @@ public class ThirdPersonController : MonoBehaviour
 
         if (Input.GetButtonDown("Throw " + player.ToString()))
         {
-            if (mushroomCount >= 3 && isMushroomSelected)
+            if (mushroomCount >= 3 && isMushroomSelected && otherPlayer != null)
             {
                 animator.SetTrigger("Throw");
             }
@@ -239,6 +273,101 @@ public class ThirdPersonController : MonoBehaviour
         lastGroundedTime = null;
     }
 
+    // --- Hitting Obstacle ---
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        // Check if the player is hitting an obstacle
+        if (hit.gameObject.CompareTag("Obstacle"))
+        {
+            Vector3 knockbackDirection = (transform.position - hit.transform.position).normalized;
+            float knockbackStrength = 3f; // The strength of the knockback
+            float blinkDuration = 0.5f;    // How long the player should blink
+
+            // Ensure the Y position remains unchanged
+            Vector3 currentPosition = transform.position;
+            currentPosition.y = controller.transform.position.y; // Maintain current Y position
+
+            KnockbackAndBlink(knockbackDirection, knockbackStrength, blinkDuration);
+        }
+    }
+
+    // --- Update checkpoint position ---
+    public void SetCheckpoint(Vector3 checkpointPosition)
+    {
+        lastCheckpointPosition = checkpointPosition;
+    }
+
+    // --- Respawn player ---
+    public void RespawnAtCheckpoint()
+    {
+        transform.position = lastCheckpointPosition + new Vector3(0, -0.4f, 0); // Set player position to the checkpoint
+    }
+
+    public void KnockbackAndBlink(Vector3 knockbackDirection, float knockbackStrength, float blinkDuration)
+    {
+        StartCoroutine(HandleKnockbackAndBlink(knockbackDirection, knockbackStrength, blinkDuration));
+    }
+
+    private IEnumerator HandleKnockbackAndBlink(Vector3 knockbackDirection, float knockbackStrength, float blinkDuration)
+    {
+        // Knockback the player
+        float timer = 0;
+        float knockbackDuration = 0.5f; // Duration of knockback
+
+        // Store the original Y position
+        float originalY = transform.position.y;
+
+        while (timer < knockbackDuration)
+        {
+            // Calculate the percentage of time elapsed
+            float t = timer / knockbackDuration;
+
+            // Move the player in the knockback direction without changing the Y position
+            Vector3 moveDirection = new Vector3(knockbackDirection.x, 0, knockbackDirection.z) * knockbackStrength * Time.deltaTime;
+
+            // Apply the movement
+            controller.Move(moveDirection);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // Blink effect
+        float blinkTime = 0;
+        float toggleInterval = 0.3f;
+        bool isVisible = true;
+
+        while (blinkTime < blinkDuration)
+        {
+            // Toggle visibility at the specified interval
+            if (blinkTime % toggleInterval < Time.deltaTime)
+            {
+                isVisible = !isVisible; // Toggle visibility
+                SetPlayerVisibility(isVisible);
+            }
+
+            blinkTime += Time.deltaTime;
+            yield return null; // Wait for the next frame
+        }
+
+        // Ensure the character is visible again after blink
+        SetPlayerVisibility(true);
+
+        // Respawn player at the last checkpoint
+        RespawnAtCheckpoint();
+    }
+
+    private bool IsPlayerVisible()
+    {
+        // Check whether the player is currently visible
+        return characterRenderer.enabled;
+    }
+
+    private void SetPlayerVisibility(bool visible)
+    {
+        // Toggle the player's visibility
+        characterRenderer.enabled = visible;
+    }
+
     private IEnumerator HandleLanding()
     {
         isFalling = false;
@@ -261,7 +390,7 @@ public class ThirdPersonController : MonoBehaviour
     {
         if (animator.GetBool("isCrouching"))
         {
-            targetHeight = 1.3f;
+            targetHeight = 1.2f;
         }
         else if (animator.GetBool("isFalling") || animator.GetBool("isJumping"))
         {
@@ -289,6 +418,29 @@ public class ThirdPersonController : MonoBehaviour
         }
     }
 
+    private IEnumerator KnockbackCoroutine()
+    {
+        float elapsedTime = 0f;
+
+        // Blink effect while knocked back
+        while (elapsedTime < knockbackDuration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            // Toggle visibility on/off for blinking effect
+            characterRenderer.enabled = !characterRenderer.enabled;
+
+            yield return new WaitForSeconds(0.1f); // Blink every 0.1 seconds
+        }
+
+        // Ensure the character is visible again after blink
+        characterRenderer.enabled = true;
+
+        // Call for respawn after knockback and blinking
+        RespawnAtCheckpoint();
+    }
+
+
     public void DealDamageToEnemy()
     {
         if (stamina < attackStaminaCost) return; // Prevent attacking if stamina is too low
@@ -314,7 +466,7 @@ public class ThirdPersonController : MonoBehaviour
             stamina = Mathf.Clamp(stamina, 0, maxStamina);
             UpdateStaminaBar(); // Update UI
 
-            closestEnemy.TakeDamage(damageDealt);
+            closestEnemy.TakeDamage(damageDealt, this);
         }
     }
 
@@ -357,22 +509,32 @@ public class ThirdPersonController : MonoBehaviour
 
     public void ThrowMushroom()
     {
-        if (!isMushroomSelected || !mushroomInHand.activeSelf || mushroomCount < maxMushrooms)
+        GameObject otherPlayerObject = GameObject.Find(otherPlayer);
+        float throwRange = 30f; // Adjust as needed
+        float distance = Vector3.Distance(transform.position, otherPlayerObject.transform.position);
+
+        // **Rotate smoothly toward the target (only horizontally)**
+        Vector3 direction = otherPlayerObject.transform.position - transform.position;
+        direction.y = 0; // Ignore vertical rotation (y-axis)
+
+        // Calculate the target rotation (look at the target on the horizontal plane)
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        // Smoothly interpolate between the current rotation and the target rotation
+        float rotationSpeed = 5f; // Adjust the speed of rotation
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        if (!isMushroomSelected || !mushroomInHand.activeSelf || mushroomCount < maxMushrooms || distance > throwRange)
         {
             Debug.Log("Cannot throw: No mushroom selected or not enough mushrooms.");
             return;
         }
-
-        GameObject otherPlayerObject = GameObject.Find(otherPlayer);
 
         if (otherPlayerObject == null)
         {
             Debug.Log("Other player not found.");
             return;
         }
-
-        float throwRange = 5f; // Adjust as needed
-        float distance = Vector3.Distance(transform.position, otherPlayerObject.transform.position);
 
         if (distance > throwRange)
         {
@@ -382,7 +544,7 @@ public class ThirdPersonController : MonoBehaviour
 
         // Create the mushroom and start the arc movement
         GameObject thrownMushroom = Instantiate(thrownMushroomPrefab, throwOrigin.position, Quaternion.identity);
-        StartCoroutine(MoveMushroomInArc(thrownMushroom, otherPlayerObject.transform.position));
+        StartCoroutine(MoveMushroomInArc(thrownMushroom, otherPlayerObject.transform));
 
         // Reset mushroom selection
         isMushroomSelected = false;
@@ -403,31 +565,103 @@ public class ThirdPersonController : MonoBehaviour
 
     void UpdateMushroomUI()
     {
-        mushroomText.text = "Mushrooms: " + mushroomCount + "/" + maxMushrooms;
+        mushroomText.text = "Mushrooms: " + mushroomCount + " / 3";
     }
 
-    private IEnumerator MoveMushroomInArc(GameObject mushroom, Vector3 targetPosition)
+    private IEnumerator MoveMushroomInArc(GameObject mushroom, Transform targetTransform)
     {
         float duration = 0.75f; // Time taken for the throw
         float elapsedTime = 0f;
 
         Vector3 startPosition = mushroom.transform.position;
-        Vector3 midPoint = (startPosition + targetPosition) / 2 + Vector3.up * 2f; // Adjust arc height
 
-        while (elapsedTime < duration)
+        if (mushroom != null)
         {
-            elapsedTime += Time.deltaTime;
-            float t = elapsedTime / duration;
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                float t = elapsedTime / duration;
 
-            // Quadratic Bezier Curve: Interpolating between start, mid, and target
-            Vector3 currentPosition = Vector3.Lerp(Vector3.Lerp(startPosition, midPoint, t), Vector3.Lerp(midPoint, targetPosition, t), t);
-            mushroom.transform.position = currentPosition;
+                // Get updated target position
+                Vector3 updatedPosition = targetTransform.position;
+                Vector3 midPoint = (startPosition + updatedPosition) / 2 + Vector3.up * 2f; // Adjust arc height
 
-            yield return null;
+                // Quadratic Bezier Curve: Interpolating between start, mid, and target
+                Vector3 currentPosition = Vector3.Lerp(Vector3.Lerp(startPosition, midPoint, t), Vector3.Lerp(midPoint, updatedPosition, t), t);
+                mushroom.transform.position = currentPosition;
+
+                yield return null;
+            }
         }
 
         // Ensure mushroom reaches the exact final position
-        mushroom.transform.position = targetPosition;
+        mushroom.transform.position = targetTransform.position;
+
+        ThirdPersonController targetPlayer = targetTransform.GetComponent<ThirdPersonController>();
+        Animator targetAnimator = targetPlayer.GetComponent<Animator>();
+        if (targetAnimator != null)
+        {
+            targetAnimator.SetTrigger("TakeHit");
+        }
+
+        if (targetPlayer != null)
+        {
+            targetPlayer.ApplySlowEffect(5f);
+            SetMushroomInvisible(mushroom);
+        }
+
+        // Destroy mushroom after applying effect
+        Destroy(mushroom);
     }
+
+    bool InTakeHitAnimaton()
+    {
+        return animator.GetCurrentAnimatorStateInfo(0).IsName("Take hit");
+    }
+
+    private IEnumerator RemoveStunAfterTime(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        isStunned = false;  // Remove the stun
+    }
+
+    void SetMushroomInvisible(GameObject mushroom)
+    {
+        foreach (MeshRenderer mesh in mushroom.GetComponentsInChildren<MeshRenderer>())
+        {
+            mesh.enabled = false;  // Disable visibility
+        }
+    }
+
+    public void ApplySlowEffect(float duration)
+    {
+        StartCoroutine(SlowEffectCoroutine(duration));
+    }
+
+    private IEnumerator SlowEffectCoroutine(float duration)
+    {
+        Debug.Log("SlowEffectStarted");
+        float originalSpeed = moveSpeed;
+        moveSpeed *= 0.2f;
+
+        yield return new WaitForSeconds(duration);
+
+        moveSpeed = originalSpeed; // Restore speed
+    }
+
+    public void IncreaseKillCount()
+    {
+        killCount++;
+        UpdateKillCountUI();
+    }
+
+    void UpdateKillCountUI()
+    {
+        if (killCountText != null)
+        {
+            killCountText.text = "Enemy Count :" + killCount;
+        }
+    } 
+
 
 }
