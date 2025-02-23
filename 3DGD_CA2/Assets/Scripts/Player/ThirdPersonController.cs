@@ -87,9 +87,15 @@ public class ThirdPersonController : MonoBehaviour
     public GameObject characterModel;
     public SkinnedMeshRenderer characterRenderer;
 
+    public AudioClip punchSound;
+    public AudioClip throwSound;
+
+    private AudioSource audioSource;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
         originalStepOffset = controller.stepOffset;
         lastCheckpointPosition = transform.position;
@@ -674,5 +680,14 @@ public class ThirdPersonController : MonoBehaviour
         }
     } 
 
+    void PlayPunchSound()
+    {
+        audioSource.PlayOneShot(punchSound);
+    }
+
+    void PlayThrowSound()
+    {
+        audioSource.PlayOneShot(throwSound);
+    }
 
 }
