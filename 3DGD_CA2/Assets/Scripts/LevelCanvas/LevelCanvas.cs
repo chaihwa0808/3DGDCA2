@@ -1,18 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelCanvas : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    public GameObject control;
+
+    public void LoadMainMenu()
     {
-        
+        SceneManager.LoadScene("MainMenu");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void LoadGameScene()
     {
-        
+        SceneManager.LoadScene("Lvl 1(baoyi)");
     }
+
+    public void LoadInstructions()
+    {
+        SceneManager.LoadScene("Instructions");
+    }
+
+    public void Credits()
+    {
+        SceneManager.LoadScene("LoadCredits");
+    }
+
+    public void Toggle()
+    {
+        control.SetActive(!control.activeSelf);
+    }
+
 }
