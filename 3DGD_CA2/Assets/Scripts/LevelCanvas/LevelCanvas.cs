@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LevelCanvas : MonoBehaviour
 {
-
     public GameObject control;
 
     public void LoadMainMenu()
@@ -16,7 +14,7 @@ public class LevelCanvas : MonoBehaviour
 
     public void LoadGameScene()
     {
-        SceneManager.LoadScene("Lvl 1(baoyi)");
+        SceneManager.LoadScene("Level1");
     }
 
     public void LoadInstructions()
@@ -26,7 +24,7 @@ public class LevelCanvas : MonoBehaviour
 
     public void Credits()
     {
-        SceneManager.LoadScene("LoadCredits");
+        SceneManager.LoadScene("Credits");
     }
 
     public void Toggle()
