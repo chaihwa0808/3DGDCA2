@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6e427a0dda55b5428a58324056a288b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  addStamina: 10
+  addStamina: 100
 --- !u!136 &3798979139372629117
 CapsuleCollider:
   m_ObjectHideFlags: 0
