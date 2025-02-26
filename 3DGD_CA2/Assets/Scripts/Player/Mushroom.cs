@@ -21,7 +21,6 @@ public class Mushroom : MonoBehaviour
         ThirdPersonController player = other.GetComponent<ThirdPersonController>();
         if (player != null)
         {
-            // slow target
             player.CollectMushroom();
             Destroy(gameObject);
         }

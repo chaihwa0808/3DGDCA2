@@ -6,7 +6,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject[] enemyPrefabs; // Array to store multiple enemy types
     [SerializeField] private Transform[] spawnPoints;
-    [SerializeField] private float respawnDelay = 3f;
+    [SerializeField] private float respawnDelay = 15f;
 
     private List<GameObject> activeEnemies = new List<GameObject>();
 
@@ -31,7 +31,7 @@ public class EnemySpawner : MonoBehaviour
 
         GameObject newEnemy = Instantiate(selectedEnemyPrefab, position, Quaternion.identity);
         Enemy enemyScript = newEnemy.GetComponent<Enemy>();
-        enemyScript.Initialize(this, position); // Assign spawner & initial position
+        enemyScript.Initialize(position); // Initialize with spawn position
         activeEnemies.Add(newEnemy);
     }
 
@@ -46,5 +46,3 @@ public class EnemySpawner : MonoBehaviour
         SpawnEnemy(spawnPosition);
     }
 }
-
-

@@ -15,13 +15,13 @@ public class FinishLineDetector : MonoBehaviour
         {
             raceFinished = true;
             Debug.Log("Player 1 reached first! Loading scene...");
-            //SceneManager.LoadScene("P1WinScene");
+            SceneManager.LoadScene("P1WinScene");
         }
         else if (other.CompareTag("P2"))
         {
             raceFinished = true;
             Debug.Log("Player 2 reached first! Loading scene...");
-            //SceneManager.LoadScene("P2WinScene");
+            SceneManager.LoadScene("P2WinScene");
         }
     }
 }

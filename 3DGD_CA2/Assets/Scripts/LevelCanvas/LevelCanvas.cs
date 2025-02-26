@@ -27,6 +27,16 @@ public class LevelCanvas : MonoBehaviour
         SceneManager.LoadScene("Credits");
     }
 
+    public void P1Win()
+    {
+        SceneManager.LoadScene("P1WinScene");
+    }
+
+    public void P2Win()
+    {
+        SceneManager.LoadScene("P2WinScene");
+    }
+
     public void Toggle()
     {
         control.SetActive(!control.activeSelf);

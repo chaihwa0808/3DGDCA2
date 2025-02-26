@@ -49,6 +49,11 @@ public class Enemy : MonoBehaviour
 
         terrain = GameObject.Find("Terrain");
 
+        GameObject myObject = GameObject.Find("EnemyManager");
+        spawner = myObject.GetComponent<EnemySpawner>();    
+
+        healthBar = GetComponentInChildren<EnemyHealthBar>();
+
         agent = GetComponent<NavMeshAgent>();
 
         originalPosition = transform.position;
@@ -114,9 +119,8 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void Initialize(EnemySpawner enemySpawner, Vector3 spawnPos)
+    public void Initialize(Vector3 spawnPos)
     {
-        spawner = enemySpawner;
         originalPosition = spawnPos;
         currentHealth = maxHealth;
         healthBar.UpdateHealthBar(maxHealth, currentHealth);
