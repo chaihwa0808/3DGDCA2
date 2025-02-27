@@ -37,6 +37,11 @@ public class LevelCanvas : MonoBehaviour
         SceneManager.LoadScene("P2WinScene");
     }
 
+    public void Lose()
+    {
+        SceneManager.LoadScene("Lose");
+    }
+
     public void Toggle()
     {
         control.SetActive(!control.activeSelf);

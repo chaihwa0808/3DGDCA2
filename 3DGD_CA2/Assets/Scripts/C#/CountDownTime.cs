@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class CountdownTimer : MonoBehaviour
 {
@@ -31,8 +32,7 @@ public class CountdownTimer : MonoBehaviour
             {
                 timeRemaining = 0;
                 timerRunning = false;  // Stop the timer when it reaches zero
-                timerText.text = "Time's Up!";
-                // Optionally, you can trigger any event when the time is up here
+                SceneManager.LoadScene("Lose");
             }
         }
     }

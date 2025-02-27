@@ -121,7 +121,7 @@ public class Enemy : MonoBehaviour
 
     public void Initialize(Vector3 spawnPos)
     {
-        originalPosition = spawnPos;
+        spawnPos = originalPosition;
         currentHealth = maxHealth;
         healthBar.UpdateHealthBar(maxHealth, currentHealth);
         anim.SetBool("isDead", false);
@@ -288,5 +288,4 @@ public class Enemy : MonoBehaviour
 
         getPlayerScript.animator.SetTrigger("TakeHit");
     }
-
 }

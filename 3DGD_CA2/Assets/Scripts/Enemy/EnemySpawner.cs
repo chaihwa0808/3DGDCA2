@@ -8,6 +8,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private float respawnDelay = 15f;
 
+    private Vector3 spawnPoint;
+
     private List<GameObject> activeEnemies = new List<GameObject>();
 
     void Start()
@@ -28,10 +30,13 @@ public class EnemySpawner : MonoBehaviour
         // Randomly select an enemy type from the available prefabs
         int randomIndex = Random.Range(0, enemyPrefabs.Length);
         GameObject selectedEnemyPrefab = enemyPrefabs[randomIndex];
-
+        
         GameObject newEnemy = Instantiate(selectedEnemyPrefab, position, Quaternion.identity);
         Enemy enemyScript = newEnemy.GetComponent<Enemy>();
-        enemyScript.Initialize(position); // Initialize with spawn position
+
+        enemyScript.originalPosition = spawnPoint;
+        enemyScript.Initialize(spawnPoint);
+
         activeEnemies.Add(newEnemy);
     }
 
